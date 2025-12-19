@@ -4,19 +4,19 @@ from dataclasses import dataclass, field
 from typing import List, Dict
 
 @dataclass
-class Processo:
+class Processo: # Representa um processo no sistema
     id: int
     t_chegada: int
     prioridade: int
     t_cpu_total: int
     t_restante: int = 0
     t_conclusao: int = 0
-    t_inicio: int = -1
+    t_inicio: int = -1 
 
     def __post_init__(self):
         self.t_restante = self.t_cpu_total
 
-class SimuladorEscalonamento:
+class SimuladorEscalonamento: # Simula algoritmos de escalonamento de CPU
     def __init__(self, n_proc, quantum, t_troca, processos_lista):
         self.n_proc = n_proc
         self.quantum = quantum
@@ -32,7 +32,7 @@ class SimuladorEscalonamento:
         fila = []
         timeline = []
         processos_finalizados = []
-        processos_restantes = sorted(processos, key=lambda p: (p.t_chegada, p.id))
+        processos_restantes = sorted(processos, key=lambda p: (p.t_chegada, p.id)) # Ordenar por tempo de chegada e ID
         
         ultimo_id = -1
         num_trocas = 0
@@ -74,12 +74,12 @@ class SimuladorEscalonamento:
             ultimo_id = p.id
 
             if p.t_restante > 0:
-                fila.append(p)
+                fila.append(p) # Reinsere no final da fila
             else:
                 p.t_conclusao = tempo_atual
                 processos_finalizados.append(p)
 
-        return self.calcular_metricas("Round Robin", processos_finalizados, timeline, num_trocas, total_tempo_troca)
+        return self.calcular_metricas("Round Robin", processos_finalizados, timeline, num_trocas, total_tempo_troca) # Calcular métricas finais
 
     def rodar_prioridade_preemptiva(self):
         processos = self.reset_processos()
@@ -141,7 +141,7 @@ class SimuladorEscalonamento:
         avg_turnaround = sum(turnarounds) / self.n_proc
         total_simulacao = len(timeline)
         overhead = (tempo_troca / total_simulacao) if total_simulacao > 0 else 0
-
+        
         return {
             "algoritmo": nome,
             "avg_turnaround": avg_turnaround,
@@ -158,7 +158,7 @@ def carregar_arquivo(caminho):
         
         # Primeira linha: nProc, quantum, tTroca
         n_proc, quantum, t_troca = map(int, linhas[0].split(','))
-        
+        # Demais linhas: processos
         processos = []
         for i in range(1, n_proc + 1):
             pid, tch, prio, tcpu = map(int, linhas[i].split(','))
